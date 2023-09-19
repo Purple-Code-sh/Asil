@@ -3,11 +3,12 @@
 
 int side_L = 0;
 int front_L = 1;
-int front_R = 2;
-int side_R = 4;
+int front_R = 4;
+int side_R = 2;
 
 int motorL_pwm = 3;
 int motorL_dir = 12;
+
 int motorR_pwm = 11;
 int motorR_dir = 13;
 
@@ -36,10 +37,14 @@ void setup()
   v_Side = 0;
 
   delay(2000);
-  goBack(200, 200, 1500);
-  delay(1000);
-  goForward(200, 200, 1500);
-  delay(1000);
+  goBack(70, 220, 350);
+  delay(2000);
+  goForward(255,255,80);
+  delay(2000);
+  goRight(false, 255, 500);
+  delay(2000);
+  goLeft(false,255,300);
+  delay(2000);
 }
 
 void loop()
@@ -141,11 +146,11 @@ int sideSensors()
 
 void stopi(bool pause, int miliseconds)
 {
-  digitalWrite(motorL_1, LOW);
-  digitalWrite(motorL_2, LOW);
+  digitalWrite(motorL_dir, LOW);
+  digitalWrite(motorL_pwm, LOW);
 
-  digitalWrite(motorL_1, LOW);
-  digitalWrite(motorR_2, LOW);
+  digitalWrite(motorR_dir, LOW);
+  digitalWrite(motorR_pwm, LOW);
 
   if (pause == true)
   {
@@ -163,8 +168,8 @@ void goForward(int powerL_f, int powerR_f, int workTime_f)
   digitalWrite(motorR_dir, LOW);
   analogWrite(motorR_pwm, powerR_f);
 
-  delay(workTime_f);
-  stopi(false, 0);
+  //delay(workTime_f);
+  //stopi(false, 0);
 }
 
 void goBack(int powerL_b, int powerR_b, int workTime_b)
@@ -175,8 +180,8 @@ void goBack(int powerL_b, int powerR_b, int workTime_b)
   digitalWrite(motorR_dir, HIGH);
   analogWrite(motorR_pwm, powerR_b);
 
-  delay(workTime_b);
-  stopi(false, 0);
+  //delay(workTime_b);
+  //stopi(false, 0);
 }
 
 void goRight(bool curve_r, int power_r, int workTime_r)
@@ -200,8 +205,8 @@ void goRight(bool curve_r, int power_r, int workTime_r)
     digitalWrite(motorR_dir, HIGH);
     analogWrite(motorR_pwm, power_r);
 
-    delay(workTime_r);
-    stopi(false, 0);
+    //delay(workTime_r);
+    //stopi(false, 0);
   }
 }
 
@@ -226,8 +231,8 @@ void goLeft(bool curve_l, int power_l, int workTime_l)
     digitalWrite(motorR_dir, LOW);
     analogWrite(motorR_pwm, power_l);
 
-    delay(workTime_l);
-    stopi(false, 0);
+    //delay(workTime_l);
+    //stopi(false, 0);
   }
 }
 

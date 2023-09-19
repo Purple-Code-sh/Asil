@@ -36,7 +36,25 @@ void setup()
   v_Front = 0;
   v_Side = 0;
 
-  //goLeft(true, 250, 300, 2);
+  delay(1500);
+
+  delay(500);
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goLeft(true, i, 25, 3);
+    } else {
+      goLeft(true, i, 50, 3);
+    }
+  }
+  
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goForward(i, i, 25);
+    } else {
+      goForward(i, i, 50);
+    }
+  }
+
 }
 
 void loop()
@@ -75,7 +93,7 @@ start:
   if (v_Front == 3)
   {
     Serial.println("Enfrente - ambos");
-    goForward(255, 255, 20);
+    //goForward(255, 255, 20);
     goto start;
   }
   else if (v_Front == 1)
@@ -246,7 +264,7 @@ void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
 void motorsTest1(int workTimes, int pause_t)
 {
   Serial.println("Test: Adelante y Atras");
-  
+
   delay(pause_t);
   Serial.println("adelante");
   goForward(200, 200, workTimes);

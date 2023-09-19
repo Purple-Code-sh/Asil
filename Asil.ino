@@ -38,22 +38,7 @@ void setup()
 
   delay(1500);
 
-  delay(500);
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goLeft(true, i, 25, 3);
-    } else {
-      goLeft(true, i, 50, 3);
-    }
-  }
-  
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goForward(i, i, 25);
-    } else {
-      goForward(i, i, 50);
-    }
-  }
+  motorsTest3();
 
 }
 
@@ -93,7 +78,6 @@ start:
   if (v_Front == 3)
   {
     Serial.println("Enfrente - ambos");
-    //goForward(255, 255, 20);
     goto start;
   }
   else if (v_Front == 1)
@@ -126,9 +110,10 @@ start:
     Serial.println("Ninguno");
     goto start;
   }
-} // <---loop end
+} // <<<---loop end
 
-// ----------------- Sensors Functions ----------------- .
+
+// ------------------------- Sensors Functions ------------------------- .
 
 int lineSensors()
 {
@@ -160,7 +145,7 @@ int sideSensors()
   return addition_Side;
 }
 
-// ----------------- Stop Functions ----------------- .
+// ------------------------- Stop Functions ------------------------- .
 
 void stopi(bool reverse)
 {
@@ -181,7 +166,7 @@ void stopi(bool reverse)
   }
 }
 
-// ----------------- Motors Functions ----------------- .
+// ------------------------- Motors Functions ------------------------- .
 
 void goForward(int powerL_f, int powerR_f, int workTime_f)
 {
@@ -259,7 +244,41 @@ void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
   }
 }
 
-// ----------------- Test Functions ----------------- .
+// ------------------------- Proportional Functions ------------------------- .
+
+void goForward_proportional(int workTime_fp) {
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goForward(i, i, round(workTime_fp / 2));
+    } else {
+      goForward(i, i, workTime_fp);
+    }
+  }
+}
+
+void goRight_proportional(int workTime_rp) {
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goRight(true, i, round(workTime_rp / 2), 3);
+    } else {
+      goRight(true, i, workTime_rp, 3);
+    }
+  }
+}
+
+void goLeft_proportional(int workTime_lp) {
+
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goLeft(true, i, round(workTime_lp / 2), 3);
+    } else {
+      goLeft(true, i, workTime_lp, 3);
+    }
+  }
+}
+
+
+// ------------------------- Test Functions ------------------------- .
 
 void motorsTest1(int workTimes, int pause_t)
 {
@@ -286,16 +305,14 @@ void motorsTest2(int workTimes, int pause_t)
   goLeft(false, 150, workTimes, 1);
 }
 
-void motorsTest3(int workTimes, int pause_t)
+void motorsTest3()
 {
   Serial.println("Test: curva a la Derecha e Izquierda");
-
-  delay(pause_t);
-  Serial.println("curva a la derecha");
-  goRight(true, 150, workTimes, 1);
-  delay(pause_t);
   Serial.println("curva a la izquierda");
-  goLeft(true, 150, workTimes, 1);
+  goLeft_proportional(60);
+  delay(1000);
+  Serial.println("curva a la derecha");
+  goRight_proportional(50);
 }
 
 void motorsTest4() {

@@ -36,14 +36,7 @@ void setup()
   v_Front = 0;
   v_Side = 0;
 
-  delay(2000);
-  goBack(70, 220, 350);
-  delay(2000);
-  goForward(255,255,80);
-  delay(2000);
-  goRight(false, 255, 500);
-  delay(2000);
-  goLeft(false,255,300);
+  goRight(true, 255, 100);
   delay(2000);
 }
 
@@ -168,8 +161,8 @@ void goForward(int powerL_f, int powerR_f, int workTime_f)
   digitalWrite(motorR_dir, LOW);
   analogWrite(motorR_pwm, powerR_f);
 
-  //delay(workTime_f);
-  //stopi(false, 0);
+  delay(workTime_f);
+  stopi(false, 0);
 }
 
 void goBack(int powerL_b, int powerR_b, int workTime_b)
@@ -180,8 +173,8 @@ void goBack(int powerL_b, int powerR_b, int workTime_b)
   digitalWrite(motorR_dir, HIGH);
   analogWrite(motorR_pwm, powerR_b);
 
-  //delay(workTime_b);
-  //stopi(false, 0);
+  delay(workTime_b);
+  stopi(false, 0);
 }
 
 void goRight(bool curve_r, int power_r, int workTime_r)
@@ -205,8 +198,8 @@ void goRight(bool curve_r, int power_r, int workTime_r)
     digitalWrite(motorR_dir, HIGH);
     analogWrite(motorR_pwm, power_r);
 
-    //delay(workTime_r);
-    //stopi(false, 0);
+    delay(workTime_r);
+    stopi(false, 0);
   }
 }
 
@@ -231,8 +224,8 @@ void goLeft(bool curve_l, int power_l, int workTime_l)
     digitalWrite(motorR_dir, LOW);
     analogWrite(motorR_pwm, power_l);
 
-    //delay(workTime_l);
-    //stopi(false, 0);
+    delay(workTime_l);
+    stopi(false, 0);
   }
 }
 
@@ -269,4 +262,18 @@ void motorsTest3(int workTimes, int pause_t)
   Serial.println("curva a la izquierda");
   goLeft(true, 150, workTimes);
   stopi(true, pause_t);
+}
+
+void motorsTest4() {
+  //Valores ya revisados que si funcionan
+  //Tiempos medidos para el tamaño del dojo
+  goBack(70, 220, 350);
+  delay(2000);
+  goForward(255, 255, 80);
+  delay(2000);
+  goRight(false, 255, 500);
+  delay(2000);
+  goLeft(false, 255, 300);
+  delay(2000);
+  stopi(false,0);
 }

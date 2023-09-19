@@ -36,8 +36,7 @@ void setup()
   v_Front = 0;
   v_Side = 0;
 
-  goRight(true, 255, 100);
-  delay(2000);
+  //goLeft(true, 250, 300, 2);
 }
 
 void loop()
@@ -51,16 +50,22 @@ start:
   if (v_Line == 3)
   {
     Serial.println("Linea - ambos");
+    goBack(70, 220, 350);
+    goLeft(false, 255, 300, 1);
     goto start;
   }
   else if (v_Line == 1)
   {
     Serial.println("Linea - izquierda");
+    goBack(70, 220, 350);
+    goLeft(false, 255, 300, 1);
     goto start;
   }
   else if (v_Line == 2)
   {
     Serial.println("Linea - derecha");
+    goBack(70, 220, 350);
+    goRight(false, 255, 500, 1);
     goto start;
   }
 
@@ -70,11 +75,13 @@ start:
   if (v_Front == 3)
   {
     Serial.println("Enfrente - ambos");
+    goForward(255, 255, 20);
     goto start;
   }
   else if (v_Front == 1)
   {
     Serial.println("Enfrente - izquierda");
+
     goto start;
   }
   else if (v_Front == 2)
@@ -137,17 +144,22 @@ int sideSensors()
 
 // ----------------- Stop Functions ----------------- .
 
-void stopi(bool pause, int miliseconds)
+void stopi(bool reverse)
 {
-  digitalWrite(motorL_dir, LOW);
-  digitalWrite(motorL_pwm, LOW);
-
-  digitalWrite(motorR_dir, LOW);
-  digitalWrite(motorR_pwm, LOW);
-
-  if (pause == true)
+  if (reverse == false)
   {
-    delay(miliseconds);
+    digitalWrite(motorL_dir, HIGH);
+    digitalWrite(motorL_pwm, LOW);
+
+    digitalWrite(motorR_dir, HIGH);
+    digitalWrite(motorR_pwm, LOW);
+  } else if (reverse == true)
+  {
+    digitalWrite(motorL_dir, LOW);
+    digitalWrite(motorL_pwm, LOW);
+
+    digitalWrite(motorR_dir, LOW);
+    digitalWrite(motorR_pwm, LOW);
   }
 }
 
@@ -162,7 +174,7 @@ void goForward(int powerL_f, int powerR_f, int workTime_f)
   analogWrite(motorR_pwm, powerR_f);
 
   delay(workTime_f);
-  stopi(false, 0);
+  stopi(false);
 }
 
 void goBack(int powerL_b, int powerR_b, int workTime_b)
@@ -174,10 +186,10 @@ void goBack(int powerL_b, int powerR_b, int workTime_b)
   analogWrite(motorR_pwm, powerR_b);
 
   delay(workTime_b);
-  stopi(false, 0);
+  stopi(true);
 }
 
-void goRight(bool curve_r, int power_r, int workTime_r)
+void goRight(bool curve_r, int power_r, int workTime_r, int relation_r)
 {
   if (curve_r == true)
   {
@@ -185,10 +197,10 @@ void goRight(bool curve_r, int power_r, int workTime_r)
     analogWrite(motorL_pwm, power_r);
 
     digitalWrite(motorR_dir, LOW);
-    analogWrite(motorR_pwm, round(power_r / 2));
+    analogWrite(motorR_pwm, round(power_r / relation_r));
 
     delay(workTime_r);
-    stopi(false, 0);
+    stopi(false);
   }
   else if (curve_r == false)
   {
@@ -199,11 +211,11 @@ void goRight(bool curve_r, int power_r, int workTime_r)
     analogWrite(motorR_pwm, power_r);
 
     delay(workTime_r);
-    stopi(false, 0);
+    stopi(false);
   }
 }
 
-void goLeft(bool curve_l, int power_l, int workTime_l)
+void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
 {
   if (curve_l == true)
   {
@@ -211,10 +223,10 @@ void goLeft(bool curve_l, int power_l, int workTime_l)
     analogWrite(motorR_pwm, power_l);
 
     digitalWrite(motorL_dir, LOW);
-    analogWrite(motorL_pwm, round(power_l / 2));
+    analogWrite(motorL_pwm, round(power_l / relation_l));
 
     delay(workTime_l);
-    stopi(false, 0);
+    stopi(false);
   }
   else if (curve_l == false)
   {
@@ -225,7 +237,7 @@ void goLeft(bool curve_l, int power_l, int workTime_l)
     analogWrite(motorR_pwm, power_l);
 
     delay(workTime_l);
-    stopi(false, 0);
+    stopi(false);
   }
 }
 
@@ -234,34 +246,38 @@ void goLeft(bool curve_l, int power_l, int workTime_l)
 void motorsTest1(int workTimes, int pause_t)
 {
   Serial.println("Test: Adelante y Atras");
+  
+  delay(pause_t);
   Serial.println("adelante");
   goForward(200, 200, workTimes);
-  stopi(true, pause_t);
+  delay(pause_t);
   Serial.println("atras");
   goBack(200, 200, workTimes);
-  stopi(true, pause_t);
 }
 
 void motorsTest2(int workTimes, int pause_t)
 {
   Serial.println("Test: giro total Derecha e Izquierda");
+
+  delay(pause_t);
   Serial.println("giro derecha");
-  goRight(false, 150, workTimes);
-  stopi(true, pause_t);
+  goRight(false, 150, workTimes, 1);
+
+  delay(pause_t);
   Serial.println("giro izquierda");
-  goLeft(false, 150, workTimes);
-  stopi(true, pause_t);
+  goLeft(false, 150, workTimes, 1);
 }
 
 void motorsTest3(int workTimes, int pause_t)
 {
   Serial.println("Test: curva a la Derecha e Izquierda");
+
+  delay(pause_t);
   Serial.println("curva a la derecha");
-  goRight(true, 150, workTimes);
-  stopi(true, pause_t);
+  goRight(true, 150, workTimes, 1);
+  delay(pause_t);
   Serial.println("curva a la izquierda");
-  goLeft(true, 150, workTimes);
-  stopi(true, pause_t);
+  goLeft(true, 150, workTimes, 1);
 }
 
 void motorsTest4() {
@@ -271,9 +287,7 @@ void motorsTest4() {
   delay(2000);
   goForward(255, 255, 80);
   delay(2000);
-  goRight(false, 255, 500);
+  goRight(false, 255, 500, 1);
   delay(2000);
-  goLeft(false, 255, 300);
-  delay(2000);
-  stopi(false,0);
+  goLeft(false, 255, 300, 1);
 }

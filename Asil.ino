@@ -1,10 +1,13 @@
+#include <Servo.h>
+
 #define line_L A2
-#define line_R A4
+#define line_R A1
+#define servo_B A5
 
 int side_L = 0;
 int front_L = 1;
-int front_R = 4;
-int side_R = 2;
+int front_R = 2;
+int side_R = 4;
 
 int motorL_pwm = 3;
 int motorL_dir = 12;
@@ -16,9 +19,12 @@ int v_Line;
 int v_Front;
 int v_Side;
 
+Servo FLAG;
+
 void setup()
 {
   Serial.begin(9600);
+  FLAG.attach(servo_B);
 
   pinMode(line_L, INPUT);
   pinMode(line_R, INPUT);
@@ -36,41 +42,39 @@ void setup()
   v_Front = 0;
   v_Side = 0;
 
-  delay(1500);
-
-  motorsTest3();
-
+  FLAG.write(90);
+  delay(5000);
+  FLAG.write(180);
 }
 
 void loop()
 {
 start:
-
   // ---------- Line ----------
 
-  v_Line = lineSensors();
+  //v_Line = lineSensors();
 
-  if (v_Line == 3)
-  {
-    Serial.println("Linea - ambos");
-    goBack(70, 220, 350);
-    goLeft(false, 255, 300, 1);
-    goto start;
-  }
-  else if (v_Line == 1)
-  {
-    Serial.println("Linea - izquierda");
-    goBack(70, 220, 350);
-    goLeft(false, 255, 300, 1);
-    goto start;
-  }
-  else if (v_Line == 2)
-  {
-    Serial.println("Linea - derecha");
-    goBack(70, 220, 350);
-    goRight(false, 255, 500, 1);
-    goto start;
-  }
+  //  if (v_Line == 3)
+  //  {
+  //    Serial.println("Linea - ambos");
+  //    goBack(70, 220, 350);
+  //    goLeft(false, 255, 300, 1);
+  //    goto start;
+  //  }
+  //  else if (v_Line == 1)
+  //  {
+  //    Serial.println("Linea - izquierda");
+  //    goBack(70, 220, 350);
+  //    goLeft(false, 255, 300, 1);
+  //    goto start;
+  //  }
+  //  else if (v_Line == 2)
+  //  {
+  //    Serial.println("Linea - derecha");
+  //    goBack(70, 220, 350);
+  //    goRight(false, 255, 500, 1);
+  //    goto start;
+  //  }
 
   // ---------- Front ----------
 
@@ -78,17 +82,19 @@ start:
   if (v_Front == 3)
   {
     Serial.println("Enfrente - ambos");
+    //goForward_proportional(20);
     goto start;
   }
   else if (v_Front == 1)
   {
     Serial.println("Enfrente - izquierda");
-
+    goLeft(false, 255, 60, 1);
     goto start;
   }
   else if (v_Front == 2)
   {
     Serial.println("Enfrente - derecha");
+    //goRight(false, 255, 60, 1);
     goto start;
   }
 
@@ -98,16 +104,22 @@ start:
   if (v_Side == 1)
   {
     Serial.println("Lado - izquierda");
+    Serial.println("giro izquierda");
+    goLeft(false, 255, 300, 1);
     goto start;
   }
   else if (v_Side == 2)
   {
     Serial.println("Lado - derecha");
+    goRight(false, 255, 300, 1);
     goto start;
   }
   else
   {
     Serial.println("Ninguno");
+    goLeft_proportional(10);
+    delay(100);
+    stopi(false);
     goto start;
   }
 } // <<<---loop end
@@ -118,7 +130,7 @@ start:
 int lineSensors()
 {
   int lineL = digitalRead(line_L);
-  int lineR = digitalRead(line_R) * 2;
+  int lineR = !digitalRead(line_R) * 2;
 
   int addition_Line = lineL + lineR;
 
@@ -256,6 +268,16 @@ void goForward_proportional(int workTime_fp) {
   }
 }
 
+void goBack_proportional(int workTime_bp) {
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 100) {
+      goBack(i, i, round(workTime_bp / 2));
+    } else {
+      goBack(i, i, workTime_bp);
+    }
+  }
+}
+
 void goRight_proportional(int workTime_rp) {
   for (int i = 5; i < 255; i = i + 50) {
     if (i < 100) {
@@ -282,40 +304,8 @@ void goLeft_proportional(int workTime_lp) {
 
 void motorsTest1(int workTimes, int pause_t)
 {
-  Serial.println("Test: Adelante y Atras");
+  //NO TOCAR ALV !!!!!!!!!!
 
-  delay(pause_t);
-  Serial.println("adelante");
-  goForward(200, 200, workTimes);
-  delay(pause_t);
-  Serial.println("atras");
-  goBack(200, 200, workTimes);
-}
-
-void motorsTest2(int workTimes, int pause_t)
-{
-  Serial.println("Test: giro total Derecha e Izquierda");
-
-  delay(pause_t);
-  Serial.println("giro derecha");
-  goRight(false, 150, workTimes, 1);
-
-  delay(pause_t);
-  Serial.println("giro izquierda");
-  goLeft(false, 150, workTimes, 1);
-}
-
-void motorsTest3()
-{
-  Serial.println("Test: curva a la Derecha e Izquierda");
-  Serial.println("curva a la izquierda");
-  goLeft_proportional(60);
-  delay(1000);
-  Serial.println("curva a la derecha");
-  goRight_proportional(50);
-}
-
-void motorsTest4() {
   //Valores ya revisados que si funcionan
   //Tiempos medidos para el tamaño del dojo
   goBack(70, 220, 350);
@@ -325,4 +315,36 @@ void motorsTest4() {
   goRight(false, 255, 500, 1);
   delay(2000);
   goLeft(false, 255, 300, 1);
+}
+
+void motorsTest2()
+{
+  Serial.println("Test: giro total Derecha e Izquierda");
+
+  Serial.println("giro derecha");
+  goRight(false, 255, 600, 1);
+  delay(2000);
+  Serial.println("giro izquierda");
+  goLeft(false, 255, 400, 1);
+}
+
+void motorsTest3()
+{
+  Serial.println("Test: curva a la Derecha e Izquierda");
+
+  Serial.println("curva a la izquierda");
+  goLeft_proportional(50);
+  delay(1000);
+  Serial.println("curva a la derecha");
+  goRight_proportional(60);
+}
+
+void motorsTest4() {
+  Serial.println("Test: adelante y atras");
+
+  Serial.println("Adelante");
+  goForward_proportional(80);
+  delay(2000);
+  Serial.println("Atras");
+  goBack_proportional(30);
 }

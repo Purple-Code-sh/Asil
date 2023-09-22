@@ -4,6 +4,8 @@
 #define line_R A1
 #define servo_B A5
 
+int startPin = 10;
+
 int side_L = 0;
 int front_L = 1;
 int front_R = 2;
@@ -26,6 +28,7 @@ void setup()
   Serial.begin(9600);
   FLAG.attach(servo_B);
 
+  pinMode(startPin, INPUT);
   pinMode(line_L, INPUT);
   pinMode(line_R, INPUT);
   pinMode(side_L, INPUT);
@@ -44,83 +47,94 @@ void setup()
 
   FLAG.write(90);
   delay(5000);
-  FLAG.write(180);
+  
 }
 
 void loop()
 {
 start:
-  // ---------- Line ----------
+  if (digitalRead(startPin) == HIGH) {
+    Serial.println("Encendido");
+    FLAG.write(180);
+    // ---------- Line ----------
 
-  //v_Line = lineSensors();
+    //v_Line = lineSensors();
 
-  //  if (v_Line == 3)
-  //  {
-  //    Serial.println("Linea - ambos");
-  //    goBack(70, 220, 350);
-  //    goLeft(false, 255, 300, 1);
-  //    goto start;
-  //  }
-  //  else if (v_Line == 1)
-  //  {
-  //    Serial.println("Linea - izquierda");
-  //    goBack(70, 220, 350);
-  //    goLeft(false, 255, 300, 1);
-  //    goto start;
-  //  }
-  //  else if (v_Line == 2)
-  //  {
-  //    Serial.println("Linea - derecha");
-  //    goBack(70, 220, 350);
-  //    goRight(false, 255, 500, 1);
-  //    goto start;
-  //  }
+    //  if (v_Line == 3)
+    //  {
+    //    Serial.println("Linea - ambos");
+    //    goBack(70, 220, 350);
+    //    goLeft(false, 255, 300, 1);
+    //    goto start;
+    //  }
+    //  else if (v_Line == 1)
+    //  {
+    //    Serial.println("Linea - izquierda");
+    //    goBack(70, 220, 350);
+    //    goLeft(false, 255, 300, 1);
+    //    goto start;
+    //  }
+    //  else if (v_Line == 2)
+    //  {
+    //    Serial.println("Linea - derecha");
+    //    goBack(70, 220, 350);
+    //    goRight(false, 255, 500, 1);
+    //    goto start;
+    //  }
 
-  // ---------- Front ----------
+    // ---------- Front ----------
 
-  v_Front = frontSensors();
-  if (v_Front == 3)
-  {
-    Serial.println("Enfrente - ambos");
-    goForward_proportional(10);
-    delay(150);
-    goto start;
-  }
-  else if (v_Front == 1)
-  {
-    Serial.println("Enfrente - izquierda");
-    goLeft(false, 255, 60, 1);
-    goto start;
-  }
-  else if (v_Front == 2)
-  {
-    Serial.println("Enfrente - derecha");
-    goRight(false, 255, 60, 1);
-    goto start;
+    v_Front = frontSensors();
+    if (v_Front == 3)
+    {
+      Serial.println("Enfrente - ambos");
+      goForward_proportional(10);
+      delay(200);
+      goto start;
+    }
+    else if (v_Front == 1)
+    {
+      Serial.println("Enfrente - izquierda");
+      goLeft(false, 255, 60, 1);
+      goto start;
+    }
+    else if (v_Front == 2)
+    {
+      Serial.println("Enfrente - derecha");
+      goRight(false, 255, 60, 1);
+      goto start;
+    }
+
+    // ---------- Side ----------
+
+    v_Side = sideSensors();
+    if (v_Side == 1)
+    {
+      Serial.println("Lado - izquierda");
+      goLeft(false, 255, 200, 1);
+      goto start;
+    }
+    else if (v_Side == 2)
+    {
+      Serial.println("Lado - derecha");
+      goRight(false, 255, 200, 1);
+      goto start;
+    }
+    else
+    {
+      Serial.println("Ninguno");
+      goLeft_proportional(10);
+      delay(150);
+      goto start;
+    }
+  } else {
+    Serial.println("Apagado");
+    stopi(false);
+    FLAG.write(90);
   }
 
-  // ---------- Side ----------
 
-  v_Side = sideSensors();
-  if (v_Side == 1)
-  {
-    Serial.println("Lado - izquierda");
-    goLeft(false, 255, 300, 1);
-    goto start;
-  }
-  else if (v_Side == 2)
-  {
-    Serial.println("Lado - derecha");
-    goRight(false, 255, 300, 1);
-    goto start;
-  }
-  else
-  {
-    Serial.println("Ninguno");
-    goLeft_proportional(10);
-    delay(150);
-    goto start;
-  }
+
 } // <<<---loop end
 
 

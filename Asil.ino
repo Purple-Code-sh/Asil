@@ -82,7 +82,8 @@ start:
   if (v_Front == 3)
   {
     Serial.println("Enfrente - ambos");
-    //goForward_proportional(20);
+    goForward_proportional(10);
+    delay(150);
     goto start;
   }
   else if (v_Front == 1)
@@ -94,7 +95,7 @@ start:
   else if (v_Front == 2)
   {
     Serial.println("Enfrente - derecha");
-    //goRight(false, 255, 60, 1);
+    goRight(false, 255, 60, 1);
     goto start;
   }
 
@@ -104,7 +105,6 @@ start:
   if (v_Side == 1)
   {
     Serial.println("Lado - izquierda");
-    Serial.println("giro izquierda");
     goLeft(false, 255, 300, 1);
     goto start;
   }
@@ -118,8 +118,7 @@ start:
   {
     Serial.println("Ninguno");
     goLeft_proportional(10);
-    delay(100);
-    stopi(false);
+    delay(150);
     goto start;
   }
 } // <<<---loop end

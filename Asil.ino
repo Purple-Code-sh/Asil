@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-#define line_L A2
-#define line_R A1
+#define line_L A4
+#define line_R A2
 #define servo_B A5
 
 int startPin = 10;
@@ -20,6 +20,8 @@ int motorR_dir = 13;
 int v_Line;
 int v_Front;
 int v_Side;
+
+int proportionalUsed;
 
 Servo FLAG;
 
@@ -45,9 +47,11 @@ void setup()
   v_Front = 0;
   v_Side = 0;
 
+  proportionalUsed = 0;
+
   FLAG.write(90);
   delay(5000);
-  
+
 }
 
 void loop()
@@ -57,7 +61,6 @@ start:
     Serial.println("Encendido");
     FLAG.write(180);
     // ---------- Line ----------
-
     //v_Line = lineSensors();
 
     //  if (v_Line == 3)
@@ -87,21 +90,28 @@ start:
     v_Front = frontSensors();
     if (v_Front == 3)
     {
-      Serial.println("Enfrente - ambos");
-      goForward_proportional(10);
-      delay(200);
-      goto start;
+      if (proportionalUsed == 0) {
+        Serial.println("Enfrente - ambos");
+        goForward_proportional(80);
+        proportionalUsed = 1;
+        goto start;
+      } else if (proportionalUsed == 1) {
+        goForward(255, 255, 30);
+        goto start;
+      }
     }
     else if (v_Front == 1)
     {
       Serial.println("Enfrente - izquierda");
-      goLeft(false, 255, 60, 1);
+      goLeft(false, 70, 20, 1);
+      proportionalUsed = 0;
       goto start;
     }
     else if (v_Front == 2)
     {
       Serial.println("Enfrente - derecha");
-      goRight(false, 255, 60, 1);
+      goRight(false, 70, 20, 1);
+      proportionalUsed = 0;
       goto start;
     }
 
@@ -111,13 +121,15 @@ start:
     if (v_Side == 1)
     {
       Serial.println("Lado - izquierda");
-      goLeft(false, 255, 200, 1);
+      goFull_left();
+      proportionalUsed = 0;
       goto start;
     }
     else if (v_Side == 2)
     {
       Serial.println("Lado - derecha");
-      goRight(false, 255, 200, 1);
+      goFull_right();
+      proportionalUsed = 0;
       goto start;
     }
     else
@@ -125,11 +137,13 @@ start:
       Serial.println("Ninguno");
       goLeft_proportional(10);
       delay(150);
+      proportionalUsed = 0;
       goto start;
     }
   } else {
     Serial.println("Apagado");
     stopi(false);
+    proportionalUsed = 0;
     FLAG.write(90);
   }
 
@@ -140,15 +154,15 @@ start:
 
 // ------------------------- Sensors Functions ------------------------- .
 
-int lineSensors()
-{
-  int lineL = digitalRead(line_L);
-  int lineR = !digitalRead(line_R) * 2;
-
-  int addition_Line = lineL + lineR;
-
-  return addition_Line;
-}
+//int lineSensors()
+//{
+//  int lineL = digitalRead(line_L);
+//  int lineR = !digitalRead(line_R) * 2;
+//
+//  int addition_Line = lineL + lineR;
+//
+//  return addition_Line;
+//}
 
 int frontSensors()
 {
@@ -269,12 +283,28 @@ void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
   }
 }
 
+void goFull_left() {
+  digitalWrite(motorL_dir, HIGH);
+  analogWrite(motorL_pwm, 255);
+
+  digitalWrite(motorR_dir, LOW);
+  analogWrite(motorR_pwm, 255);
+}
+
+void goFull_right() {
+  digitalWrite(motorL_dir, LOW);
+  analogWrite(motorL_pwm, 255);
+
+  digitalWrite(motorR_dir, HIGH);
+  analogWrite(motorR_pwm, 255);
+}
+
 // ------------------------- Proportional Functions ------------------------- .
 
 void goForward_proportional(int workTime_fp) {
   for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goForward(i, i, round(workTime_fp / 2));
+    if (i < 200) {
+      goForward(i, i, round(workTime_fp / 4));
     } else {
       goForward(i, i, workTime_fp);
     }

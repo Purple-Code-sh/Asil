@@ -164,6 +164,26 @@ start:
 //  return addition_Line;
 //}
 
+int lineSensors()
+{
+  int lineStatus;
+
+  int valLeft = analogRead(line_L);
+  int valRight = analogRead(line_R);
+
+  if (valLeft > 600 && valRight > 600) {
+    lineStatus = 3;
+  } else if (valLeft > 600) {
+    lineStatus = 1;
+  } else if (valRight > 600) {
+    lineStatus = 2;
+  } else {
+    lineStatus = 0;
+  }
+
+  return lineStatus;
+}
+
 int frontSensors()
 {
   int frontL = digitalRead(front_L);

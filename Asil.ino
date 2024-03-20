@@ -61,7 +61,6 @@ void loop()
 start:
   //if (digitalRead(startPin) == HIGH) {
   FLAG.write(190);
-  //Serial.println("Encendido");
 
 
   // ---------- Line ----------
@@ -80,11 +79,11 @@ start:
   {
     if (proportionalUsed == 0) {
       Serial.println("Enfrente - ambos");
-      goForward_proportional(80);
+      //goForward_proportional(80);
       proportionalUsed = 1;
       goto start;
     } else if (proportionalUsed == 1) {
-      goForward(255, 255, 30);
+      //goForward(255, 255, 30);
       goto start;
     }
   }
@@ -124,8 +123,8 @@ start:
   else
   {
     Serial.println("Ninguno");
-    goLeft_proportional(10);
-    delay(150);
+    //        goLeft_proportional(10);
+    //        delay(150);
     proportionalUsed = 0;
     goto start;
   }
@@ -262,18 +261,18 @@ void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
 
 void goFull_left() {
   digitalWrite(motorL_dir, HIGH);
-  analogWrite(motorL_pwm, 255);
+  analogWrite(motorL_pwm, 90);
 
   digitalWrite(motorR_dir, LOW);
-  analogWrite(motorR_pwm, 255);
+  analogWrite(motorR_pwm, 90);
 }
 
 void goFull_right() {
   digitalWrite(motorL_dir, LOW);
-  analogWrite(motorL_pwm, 255);
+  analogWrite(motorL_pwm, 200);
 
   digitalWrite(motorR_dir, HIGH);
-  analogWrite(motorR_pwm, 255);
+  analogWrite(motorR_pwm, 200);
 }
 
 // ------------------------- Proportional Functions ------------------------- .

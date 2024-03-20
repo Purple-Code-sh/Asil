@@ -1,15 +1,17 @@
 #include <Servo.h>
 
-#define line_L A4
-#define line_R A2
-#define servo_B A5
+//#define line_R A2
+//#define line_I A5
+//#define servo_B A4
+#define front_R A5
 
-int startPin = 10;
+int servo_B = 2;
+//int startPin = 10;
 
 int side_L = 0;
 int front_L = 1;
-int front_R = 2;
 int side_R = 4;
+//int front_R = 4;
 
 int motorL_pwm = 3;
 int motorL_dir = 12;
@@ -17,7 +19,7 @@ int motorL_dir = 12;
 int motorR_pwm = 11;
 int motorR_dir = 13;
 
-int v_Line;
+//int v_Line;
 int v_Front;
 int v_Side;
 
@@ -31,8 +33,8 @@ void setup()
   FLAG.attach(servo_B);
 
   pinMode(startPin, INPUT);
-  pinMode(line_L, INPUT);
-  pinMode(line_R, INPUT);
+//  pinMode(line_L, INPUT);
+ // pinMode(line_R, INPUT);
   pinMode(side_L, INPUT);
   pinMode(side_R, INPUT);
   pinMode(front_L, INPUT);
@@ -43,47 +45,31 @@ void setup()
   pinMode(motorR_pwm, OUTPUT);
   pinMode(motorR_dir, OUTPUT);
 
-  v_Line = 0;
+  //v_Line = 0;
   v_Front = 0;
   v_Side = 0;
 
   proportionalUsed = 0;
 
-  FLAG.write(90);
-  delay(5000);
-
+  FLAG.write(0);
 }
 
 void loop()
 {
 start:
-  if (digitalRead(startPin) == HIGH) {
+  //if (digitalRead(startPin) == HIGH) {
+    FLAG.write(90);
     Serial.println("Encendido");
-    FLAG.write(180);
-    // ---------- Line ----------
-    //v_Line = lineSensors();
+    
 
-    //  if (v_Line == 3)
-    //  {
-    //    Serial.println("Linea - ambos");
-    //    goBack(70, 220, 350);
-    //    goLeft(false, 255, 300, 1);
-    //    goto start;
-    //  }
-    //  else if (v_Line == 1)
-    //  {
-    //    Serial.println("Linea - izquierda");
-    //    goBack(70, 220, 350);
-    //    goLeft(false, 255, 300, 1);
-    //    goto start;
-    //  }
-    //  else if (v_Line == 2)
-    //  {
-    //    Serial.println("Linea - derecha");
-    //    goBack(70, 220, 350);
-    //    goRight(false, 255, 500, 1);
-    //    goto start;
-    //  }
+    // ---------- Line ----------
+    // if (analogRead(line_I) < 600)
+    // {
+    //   Serial.println("Linea - izq");
+    //   goBack(50, 255, 200);
+    //   goRight(false, 255, 90, 1);
+    //   goto start;
+    // }
 
     // ---------- Front ----------
 
@@ -118,6 +104,7 @@ start:
     // ---------- Side ----------
 
     v_Side = sideSensors();
+
     if (v_Side == 1)
     {
       Serial.println("Lado - izquierda");
@@ -140,49 +127,17 @@ start:
       proportionalUsed = 0;
       goto start;
     }
-  } else {
-    Serial.println("Apagado");
-    stopi(false);
-    proportionalUsed = 0;
-    FLAG.write(90);
-  }
-
-
+  // } else {
+  //   Serial.println("Apagado");
+  //   stopi(false);
+  //   proportionalUsed = 0;
+  //   FLAG.write(90);
+  // }
 
 } // <<<---loop end
 
 
 // ------------------------- Sensors Functions ------------------------- .
-
-//int lineSensors()
-//{
-//  int lineL = digitalRead(line_L);
-//  int lineR = !digitalRead(line_R) * 2;
-//
-//  int addition_Line = lineL + lineR;
-//
-//  return addition_Line;
-//}
-
-int lineSensors()
-{
-  int lineStatus;
-
-  int valLeft = analogRead(line_L);
-  int valRight = analogRead(line_R);
-
-  if (valLeft > 600 && valRight > 600) {
-    lineStatus = 3;
-  } else if (valLeft > 600) {
-    lineStatus = 1;
-  } else if (valRight > 600) {
-    lineStatus = 2;
-  } else {
-    lineStatus = 0;
-  }
-
-  return lineStatus;
-}
 
 int frontSensors()
 {

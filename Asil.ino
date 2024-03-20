@@ -32,9 +32,9 @@ void setup()
   Serial.begin(9600);
   FLAG.attach(servo_B);
 
-  pinMode(startPin, INPUT);
-//  pinMode(line_L, INPUT);
- // pinMode(line_R, INPUT);
+  //pinMode(startPin, INPUT);
+  //  pinMode(line_L, INPUT);
+  // pinMode(line_R, INPUT);
   pinMode(side_L, INPUT);
   pinMode(side_R, INPUT);
   pinMode(front_L, INPUT);
@@ -44,6 +44,7 @@ void setup()
   pinMode(motorL_dir, OUTPUT);
   pinMode(motorR_pwm, OUTPUT);
   pinMode(motorR_dir, OUTPUT);
+  pinMode(servo_B, OUTPUT);
 
   //v_Line = 0;
   v_Front = 0;
@@ -51,82 +52,83 @@ void setup()
 
   proportionalUsed = 0;
 
-  FLAG.write(0);
+  FLAG.write(80);
+  delay(3000);
 }
 
 void loop()
 {
 start:
   //if (digitalRead(startPin) == HIGH) {
-    FLAG.write(90);
-    Serial.println("Encendido");
-    
+  FLAG.write(190);
+  //Serial.println("Encendido");
 
-    // ---------- Line ----------
-    // if (analogRead(line_I) < 600)
-    // {
-    //   Serial.println("Linea - izq");
-    //   goBack(50, 255, 200);
-    //   goRight(false, 255, 90, 1);
-    //   goto start;
-    // }
 
-    // ---------- Front ----------
+  // ---------- Line ----------
+  // if (analogRead(line_I) < 600)
+  // {
+  //   Serial.println("Linea - izq");
+  //   goBack(50, 255, 200);
+  //   goRight(false, 255, 90, 1);
+  //   goto start;
+  // }
 
-    v_Front = frontSensors();
-    if (v_Front == 3)
-    {
-      if (proportionalUsed == 0) {
-        Serial.println("Enfrente - ambos");
-        goForward_proportional(80);
-        proportionalUsed = 1;
-        goto start;
-      } else if (proportionalUsed == 1) {
-        goForward(255, 255, 30);
-        goto start;
-      }
-    }
-    else if (v_Front == 1)
-    {
-      Serial.println("Enfrente - izquierda");
-      goLeft(false, 70, 20, 1);
-      proportionalUsed = 0;
+  // ---------- Front ----------
+
+  v_Front = frontSensors();
+  if (v_Front == 3)
+  {
+    if (proportionalUsed == 0) {
+      Serial.println("Enfrente - ambos");
+      goForward_proportional(80);
+      proportionalUsed = 1;
+      goto start;
+    } else if (proportionalUsed == 1) {
+      goForward(255, 255, 30);
       goto start;
     }
-    else if (v_Front == 2)
-    {
-      Serial.println("Enfrente - derecha");
-      goRight(false, 70, 20, 1);
-      proportionalUsed = 0;
-      goto start;
-    }
+  }
+  else if (v_Front == 1)
+  {
+    Serial.println("Enfrente - izquierda");
+    goLeft(false, 70, 20, 1);
+    proportionalUsed = 0;
+    goto start;
+  }
+  else if (v_Front == 2)
+  {
+    Serial.println("Enfrente - derecha");
+    goRight(false, 70, 20, 1);
+    proportionalUsed = 0;
+    goto start;
+  }
 
-    // ---------- Side ----------
+  // ---------- Side ----------
 
-    v_Side = sideSensors();
+  v_Side = sideSensors();
 
-    if (v_Side == 1)
-    {
-      Serial.println("Lado - izquierda");
-      goFull_left();
-      proportionalUsed = 0;
-      goto start;
-    }
-    else if (v_Side == 2)
-    {
-      Serial.println("Lado - derecha");
-      goFull_right();
-      proportionalUsed = 0;
-      goto start;
-    }
-    else
-    {
-      Serial.println("Ninguno");
-      goLeft_proportional(10);
-      delay(150);
-      proportionalUsed = 0;
-      goto start;
-    }
+  if (v_Side == 1)
+  {
+    Serial.println("Lado - izquierda");
+    goFull_left();
+    proportionalUsed = 0;
+    goto start;
+  }
+  else if (v_Side == 2)
+  {
+    Serial.println("Lado - derecha");
+    goFull_right();
+    proportionalUsed = 0;
+    goto start;
+  }
+  else
+  {
+    Serial.println("Ninguno");
+    goLeft_proportional(10);
+    delay(150);
+    proportionalUsed = 0;
+    goto start;
+  }
   // } else {
   //   Serial.println("Apagado");
   //   stopi(false);

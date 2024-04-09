@@ -207,6 +207,34 @@ void goBack(int powerL_b, int powerR_b, int workTime_b)
   stopi(true);
 }
 
+void goFull_left() {
+  digitalWrite(motorL_dir, HIGH);
+  analogWrite(motorL_pwm, 90);
+
+  digitalWrite(motorR_dir, LOW);
+  analogWrite(motorR_pwm, 90);
+}
+
+void goFull_right() {
+  digitalWrite(motorL_dir, LOW);
+  analogWrite(motorL_pwm, 200);
+
+  digitalWrite(motorR_dir, HIGH);
+  analogWrite(motorR_pwm, 200);
+}
+
+// ------------------------- Proportional Functions ------------------------- .
+
+void goForward_proportional(int workTime_fp) {
+  for (int i = 5; i < 255; i = i + 50) {
+    if (i < 200) {
+      goForward(i, i, round(workTime_fp / 4));
+    } else {
+      goForward(i, i, workTime_fp);
+    }
+  }
+}
+
 void goRight(bool curve_r, int power_r, int workTime_r, int relation_r)
 {
   if (curve_r == true)
@@ -257,113 +285,4 @@ void goLeft(bool curve_l, int power_l, int workTime_l, int relation_l)
     delay(workTime_l);
     stopi(false);
   }
-}
-
-void goFull_left() {
-  digitalWrite(motorL_dir, HIGH);
-  analogWrite(motorL_pwm, 90);
-
-  digitalWrite(motorR_dir, LOW);
-  analogWrite(motorR_pwm, 90);
-}
-
-void goFull_right() {
-  digitalWrite(motorL_dir, LOW);
-  analogWrite(motorL_pwm, 200);
-
-  digitalWrite(motorR_dir, HIGH);
-  analogWrite(motorR_pwm, 200);
-}
-
-// ------------------------- Proportional Functions ------------------------- .
-
-void goForward_proportional(int workTime_fp) {
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 200) {
-      goForward(i, i, round(workTime_fp / 4));
-    } else {
-      goForward(i, i, workTime_fp);
-    }
-  }
-}
-
-void goBack_proportional(int workTime_bp) {
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goBack(i, i, round(workTime_bp / 2));
-    } else {
-      goBack(i, i, workTime_bp);
-    }
-  }
-}
-
-void goRight_proportional(int workTime_rp) {
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goRight(true, i, round(workTime_rp / 2), 3);
-    } else {
-      goRight(true, i, workTime_rp, 3);
-    }
-  }
-}
-
-void goLeft_proportional(int workTime_lp) {
-
-  for (int i = 5; i < 255; i = i + 50) {
-    if (i < 100) {
-      goLeft(true, i, round(workTime_lp / 2), 3);
-    } else {
-      goLeft(true, i, workTime_lp, 3);
-    }
-  }
-}
-
-
-// ------------------------- Test Functions ------------------------- .
-
-void motorsTest1(int workTimes, int pause_t)
-{
-  //NO TOCAR ALV !!!!!!!!!!
-
-  //Valores ya revisados que si funcionan
-  //Tiempos medidos para el tamaño del dojo
-  goBack(70, 220, 350);
-  delay(2000);
-  goForward(255, 255, 80);
-  delay(2000);
-  goRight(false, 255, 500, 1);
-  delay(2000);
-  goLeft(false, 255, 300, 1);
-}
-
-void motorsTest2()
-{
-  Serial.println("Test: giro total Derecha e Izquierda");
-
-  Serial.println("giro derecha");
-  goRight(false, 255, 600, 1);
-  delay(2000);
-  Serial.println("giro izquierda");
-  goLeft(false, 255, 400, 1);
-}
-
-void motorsTest3()
-{
-  Serial.println("Test: curva a la Derecha e Izquierda");
-
-  Serial.println("curva a la izquierda");
-  goLeft_proportional(50);
-  delay(1000);
-  Serial.println("curva a la derecha");
-  goRight_proportional(60);
-}
-
-void motorsTest4() {
-  Serial.println("Test: adelante y atras");
-
-  Serial.println("Adelante");
-  goForward_proportional(80);
-  delay(2000);
-  Serial.println("Atras");
-  goBack_proportional(30);
 }

@@ -53,14 +53,16 @@ void setup()
   proportionalUsed = 0;
 
   FLAG.write(80);
-  delay(3000);
+
+  goForward(255, 255, 3000);
+  delay(5000);
 }
 
 void loop()
 {
 start:
   //if (digitalRead(startPin) == HIGH) {
-  FLAG.write(190);
+  //FLAG.write(190);
 
 
   // ---------- Line ----------

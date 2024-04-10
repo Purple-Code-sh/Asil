@@ -4,16 +4,13 @@
 
 // #define line_R A2
 // #define line_I A5
-// #define servo_B A4
 #define front_R A5
-
-int servo_B = 2;
-// int startPin = 10;
-
 int side_L = 0;
 int front_L = 1;
 int side_R = 4;
-// int front_R = 4;
+
+int servo_B = 2;
+// int startPin = 10;
 
 int motorL_pwm = 12;
 int motorL_dir = 3;
@@ -237,9 +234,12 @@ start:
   // if (analogRead(line_I) < 600)
   // {
   //   Serial.println("Linea - izq");
-  //   goBack(50, 255, 200);
-  //   goRight(false, 255, 90, 1);
-  //   goto start;
+  // goFull_back();
+  // delay(30);
+  // goFull_right();
+  // delay(20);
+  // stopi(true);
+  // goto start;
   // }
 
   // ---------- Front ----------
@@ -250,21 +250,19 @@ start:
     if (proportionalUsed == 0)
     {
       Serial.println("Enfrente - ambos");
-      // goForward_proportional(80);
       goFull_left();
       proportionalUsed = 1;
       goto start;
     }
     else if (proportionalUsed == 1)
     {
-      // goForward(255, 255, 30);
       goFull_left();
       goto start;
     }
   }
   else if (v_Front == 1)
   {
-    Serial.println("Enfrente - izquierda"); // todo izquierda
+    Serial.println("Enfrente - izquierda");
     goLeft(false, 70, 10, 1);
     proportionalUsed = 0;
     goto start;
@@ -283,8 +281,7 @@ start:
 
   if (v_Side == 1)
   {
-    Serial.println("Lado - izquierda"); // pa adelante
-    // goFull_left();
+    Serial.println("Lado - izquierda");
     goLeft(false, 120, 10, 1);
     proportionalUsed = 0;
     goto start;
@@ -298,7 +295,6 @@ start:
   }
   else
   {
-    // Serial.println("Ninguno");
     proportionalUsed = 0;
     if (counter == 20000)
     {
